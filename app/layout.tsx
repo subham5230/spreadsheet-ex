@@ -1,6 +1,10 @@
+import AppBar from '@/components/AppBar';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import SheetMenu from '@/components/SheetMenu';
+import AddressBar from '@/components/AddressBar';
+import Providers from '@/components/Providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +20,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className + ' bg-slate-50'}>
+        <Providers>
+          <div className="h-[72px]">
+            <AppBar />
+          </div>
+          <div className="h-10">
+            <SheetMenu />
+          </div>
+          <div className="h-[1.75rem] px-8 bg-white">
+            <AddressBar />
+          </div>
+          <div className="h-[calc(100vh-11rem)] overflow-auto">{children}</div>
+          <div className="h-8 border"></div>
+        </Providers>
+      </body>
     </html>
   );
 }
