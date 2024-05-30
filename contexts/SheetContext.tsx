@@ -7,7 +7,7 @@ import {
   ReactNode
 } from 'react';
 
-import { CellProps, Sheet, SheetRow } from '@/types';
+import { CellProps, FontFamilyOptions, Sheet, SheetRow } from '@/types';
 
 interface SheetProviderProps {
   children: ReactNode;
@@ -15,8 +15,7 @@ interface SheetProviderProps {
 
 export type SheetAction =
   | { type: 'UPDATE_SHEET'; payload: SheetRow[] }
-  | { type: 'UPDATE_SELECTED_CELL'; payload: CellProps }
-  | { type: 'UPDATE_SHEET_AND_SELECTED_CELL'; payload: Sheet }; // Replace 'any' with the actual type of selectedCell
+  | { type: 'UPDATE_SELECTED_CELL'; payload: CellProps };
 
 type ActionHandler = {
   [key: string]: (sheet: Sheet, actionPayload: any) => Sheet; // Replace 'any' with a more specific type if possible
@@ -48,8 +47,7 @@ export function useSheetDispatch() {
 
 const actionHandlers: ActionHandler = {
   UPDATE_SHEET: updateSheet,
-  UPDATE_SELECTED_CELL: updateSelectedCell,
-  UPDATE_SHEET_AND_SELECTED_CELL: updateSheetAndSelectedCell
+  UPDATE_SELECTED_CELL: updateSelectedCell
 };
 
 function sheetReducer(sheet: Sheet, action: SheetAction): Sheet {
@@ -70,15 +68,17 @@ function updateSheet(sheet: Sheet, actionPayload: Sheet): Sheet {
 // Function to update only the selectedCell
 function updateSelectedCell(sheet: Sheet, actionPayload: CellProps): Sheet {
   // Replace 'any' with the actual type of selectedCell
+  const cellsCopy = [...sheet.cells];
+  cellsCopy[actionPayload.rowIndex][actionPayload.colIndex] = {
+    ...cellsCopy[actionPayload.rowIndex][actionPayload.colIndex],
+    ...actionPayload
+  };
+
   return {
     ...sheet,
+    cells: cellsCopy,
     selectedCell: actionPayload
   };
-}
-
-// Function to update both the sheet and the selectedCell
-function updateSheetAndSelectedCell(sheet: Sheet, actionPayload: Sheet): Sheet {
-  return actionPayload;
 }
 
 const intialSheet = {
@@ -97,10 +97,10 @@ function generateNewSheet(): SheetRow[] {
     isUnderline: false,
     isStrikethrough: false,
     textAlign: 'left',
-    fontSize: 12,
-    fontFamily: 'sans-serif',
-    textColor: 'black',
-    backgroundColor: 'white'
+    fontSize: '16',
+    fontFamily: FontFamilyOptions[0],
+    textColor: '#000000',
+    backgroundColor: '#FFFFFF'
   };
 
   const sheet: SheetRow[] = [];

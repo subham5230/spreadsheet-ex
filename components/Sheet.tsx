@@ -19,7 +19,7 @@ export default function SheetMain(props: ISheetProps) {
     (input: string, cell: CellProps) => {
       handleValueInput(input, cell);
     },
-    100
+    500
   );
 
   if (!dispatch || !sheet || !sheet.cells) return [];
@@ -65,20 +65,11 @@ export default function SheetMain(props: ISheetProps) {
   function updateSelectedCellProps(cell: CellProps) {
     if (!dispatch) return;
     if (!sheet) return;
-
-    const sheetCopy: Sheet = { ...sheet };
-
-    if (!sheetCopy) return;
-
     if (cell.rowIndex < 0 || cell.colIndex < 0) return;
 
-    sheetCopy.cells[cell.rowIndex][cell.colIndex] = cell;
-
-    sheetCopy.selectedCell = cell;
-
     const payload: SheetAction = {
-      type: 'UPDATE_SHEET_AND_SELECTED_CELL',
-      payload: sheetCopy
+      type: 'UPDATE_SELECTED_CELL',
+      payload: cell
     };
     dispatch(payload);
   }

@@ -26,6 +26,21 @@ export function Cell(props: ICellProps) {
     >
       <input
         className="w-full h-full outline-none bg-transparent"
+        style={{
+          border: 'none',
+          outline: 'none',
+          borderRadius: '0px',
+          padding: '0px',
+          margin: '0px',
+          fontStyle: props.cell.isItalic ? 'italic' : 'normal',
+          textDecoration: handleTextDecoration(),
+          fontWeight: props.cell.isBold ? 'bold' : 'normal',
+          fontSize: props.cell.fontSize + 'px',
+          color: props.cell.textColor,
+          backgroundColor: props.cell.backgroundColor,
+          textAlign: props.cell.textAlign as 'left' | 'center' | 'right',
+          fontFamily: props.cell.fontFamily
+        }}
         value={cellValue}
         onClick={() => props.setSelectedCell(props.cell)}
         onChange={e => {
@@ -35,4 +50,16 @@ export function Cell(props: ICellProps) {
       />
     </div>
   );
+
+  function handleTextDecoration() {
+    if (props.cell.isStrikethrough && props.cell.isUnderline) {
+      return 'line-through underline';
+    } else if (props.cell.isStrikethrough) {
+      return 'line-through';
+    } else if (props.cell.isUnderline) {
+      return 'underline';
+    } else {
+      return 'none';
+    }
+  }
 }
