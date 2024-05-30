@@ -4,6 +4,8 @@ export const INITIAL_COLS = 26;
 
 export type CellProps = {
   id: string;
+  rowIndex: number;
+  colIndex: number;
   value: string;
   isBold: boolean;
   isItalic: boolean;
@@ -19,6 +21,6 @@ export type CellProps = {
 export type SheetRow = CellProps[];
 
 export type Sheet = {
-  selectedCell: string | null;
+  selectedCell: CellProps | null;
   cells: SheetRow[];
 };

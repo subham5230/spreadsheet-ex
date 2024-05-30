@@ -13,9 +13,10 @@ interface SheetProviderProps {
   children: ReactNode;
 }
 
-type SheetAction =
-  | { type: 'UPDATE_SHEET'; payload: Sheet }
-  | { type: 'UPDATE_SELECTED_CELL'; payload: any }; // Replace 'any' with the actual type of selectedCell
+export type SheetAction =
+  | { type: 'UPDATE_SHEET'; payload: SheetRow[] }
+  | { type: 'UPDATE_SELECTED_CELL'; payload: CellProps }
+  | { type: 'UPDATE_SHEET_AND_SELECTED_CELL'; payload: Sheet }; // Replace 'any' with the actual type of selectedCell
 
 type ActionHandler = {
   [key: string]: (sheet: Sheet, actionPayload: any) => Sheet; // Replace 'any' with a more specific type if possible
@@ -47,7 +48,8 @@ export function useSheetDispatch() {
 
 const actionHandlers: ActionHandler = {
   UPDATE_SHEET: updateSheet,
-  UPDATE_SELECTED_CELL: updateSelectedCell
+  UPDATE_SELECTED_CELL: updateSelectedCell,
+  UPDATE_SHEET_AND_SELECTED_CELL: updateSheetAndSelectedCell
 };
 
 function sheetReducer(sheet: Sheet, action: SheetAction): Sheet {
@@ -66,12 +68,17 @@ function updateSheet(sheet: Sheet, actionPayload: Sheet): Sheet {
 }
 
 // Function to update only the selectedCell
-function updateSelectedCell(sheet: Sheet, actionPayload: any): Sheet {
+function updateSelectedCell(sheet: Sheet, actionPayload: CellProps): Sheet {
   // Replace 'any' with the actual type of selectedCell
   return {
     ...sheet,
     selectedCell: actionPayload
   };
+}
+
+// Function to update both the sheet and the selectedCell
+function updateSheetAndSelectedCell(sheet: Sheet, actionPayload: Sheet): Sheet {
+  return actionPayload;
 }
 
 const intialSheet = {
@@ -82,6 +89,8 @@ const intialSheet = {
 function generateNewSheet(): SheetRow[] {
   const initialCell: CellProps = {
     id: '',
+    rowIndex: 0,
+    colIndex: 0,
     value: '',
     isBold: false,
     isItalic: false,
@@ -101,7 +110,9 @@ function generateNewSheet(): SheetRow[] {
     for (let j = 0; j < 26; j++) {
       Row.push({
         ...initialCell,
-        id: `${String.fromCharCode(j + 65)}${i + 1}`
+        id: `${String.fromCharCode(j + 65)}${i + 1}`,
+        rowIndex: i,
+        colIndex: j
       });
     }
     sheet.push(Row);
